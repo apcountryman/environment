@@ -66,11 +66,24 @@ function ensure_environment_has_not_been_configured()
     fi
 }
 
+function log_event()
+{
+    local -r event="$1"
+
+    if ! echo "$( date --utc +'%F %H:%M:%S' ) ($version) - $event" | sudo tee -a "$log_file"; then
+        abort "log failure"
+    fi
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
 
     ensure_environment_has_not_been_configured
+
+    log_event "configuration started"
+
+    log_event "configuration completed"
 }
 
 function main()
