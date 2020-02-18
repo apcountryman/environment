@@ -42,7 +42,7 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --environment <type>"
+    echo "    $mnemonic --environment <type> [--ip-address <address>]"
     echo "OPTIONS"
     echo "    --environment <type>"
     echo "        Specify the type of environment that is being configured. The following"
@@ -51,13 +51,19 @@ function display_help_text()
     echo "            vm"
     echo "    --help"
     echo "        Display this help text."
+    echo "    --ip-address <address>"
+    echo "        Specify the static IP address of a VM's host-only network interface."
+    echo "        This option is not supported for the 'host' environment type. This"
+    echo "        option is mandatory for the 'vm' environment type. The IP address must"
+    echo "        be in the 192.168.56.0/24 network and not be 192.168.56.1. The validity"
+    echo "        of the address is not checked by this script."
     echo "    --version"
     echo "        Display the version of this script."
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --environment host"
-    echo "    $mnemonic --environment vm"
+    echo "    $mnemonic --environment vm --ip-address 192.168.56.2"
 }
 
 function display_version()
@@ -126,6 +132,17 @@ function main()
                     abort "'$environment' is not a supported environment type"
                 fi
                 ;;
+            --ip-address)
+                if [[ -n "$ip_address" ]]; then
+                    abort "host-only network interface static IP address already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "host-only network interface static IP address not specified"
+                fi
+
+                local -r ip_address="$1"; shift
+                ;;
             --*)
                 ;&
             -*)
@@ -139,6 +156,10 @@ function main()
 
     if [[ -z "$environment" ]]; then
         abort "'--environment' must be specified"
+    fi
+
+    if [[ "$environment" == "host" && -n "$ip_address" ]]; then
+        abort "'--ip-address' is not a supported option for the 'host' environment type"
     fi
 
     configure_environment
