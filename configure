@@ -59,6 +59,20 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
+function ensure_environment_has_not_been_configured()
+{
+    if [[ -e "$log_file" ]]; then
+        abort "environment has already been configured"
+    fi
+}
+
+function configure_environment()
+{
+    local -r log_file="/var/log/environment"
+
+    ensure_environment_has_not_been_configured
+}
+
 function main()
 {
     local -r script=$( readlink -f "$0" )
@@ -88,6 +102,8 @@ function main()
                 ;;
         esac
     done
+
+    configure_environment
 }
 
 main "$@"
