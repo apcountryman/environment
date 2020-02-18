@@ -87,6 +87,15 @@ function log_event()
     fi
 }
 
+function configure_host_only_network_interface()
+{
+    # TODO: #5
+    # shellcheck disable=SC1117
+    if ! printf "allow-hotplug enp0s8\niface enp0s8 inet static\n    address %s\n    netmask 255.255.255.0\n" "$ip_address" | sudo tee "/etc/network/interfaces.d/host-only"; then
+        abort "host-only network interface configuration failure"
+    fi
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -94,6 +103,10 @@ function configure_environment()
     ensure_environment_has_not_been_configured
 
     log_event "configuration started"
+
+    if [[ "$environment" == "vm" ]]; then
+        configure_host_only_network_interface
+    fi
 
     log_event "configuration completed"
 }
