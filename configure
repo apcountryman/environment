@@ -96,6 +96,31 @@ function configure_host_only_network_interface()
     fi
 }
 
+function configure_apt_package_sources()
+{
+    if ! sudo sed -i '/^deb/ s/$/ contrib non-free/' "/etc/apt/sources.list"; then
+        abort "apt package sources configuration failure"
+    fi
+
+    if ! sudo apt-key add "$repository/apt/keys/google/linux_signing_key.pub"; then
+        abort "Google apt package signing key installation failure"
+    fi
+
+    if ! echo "deb http://dl.google.com/linux/chrome/deb stable main" | sudo tee "/etc/apt/sources.list.d/google-chrome.list"; then
+        abort "Google Chrome apt package repository configuration failure"
+    fi
+
+    if [[ "$environment" == "host" ]]; then
+        if ! sudo apt-key add "$repository/apt/keys/oracle/oracle_vbox_2016.asc"; then
+            abort "VirtualBox apt package signing key installation failure"
+        fi
+
+        if ! echo "deb https://download.virtualbox.org/virtualbox/debian buster contrib" | sudo tee "/etc/apt/sources.list.d/virtualbox.list"; then
+            abort "VirtualBox apt package repository configuration failure"
+        fi
+    fi
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -107,6 +132,8 @@ function configure_environment()
     if [[ "$environment" == "vm" ]]; then
         configure_host_only_network_interface
     fi
+
+    configure_apt_package_sources
 
     log_event "configuration completed"
 }
