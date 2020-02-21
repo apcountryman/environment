@@ -121,6 +121,15 @@ function configure_apt_package_sources()
     fi
 }
 
+function update_and_install_packages()
+{
+    local packages; mapfile -t packages < <( cat "$repository/packages" "$repository/packages-$environment" | sed '/^#/ d' | sed '/^$/ d' | sort ); readonly packages
+
+    if ! ( sudo apt update && sudo apt -y dist-upgrade && sudo apt -y install "${packages[@]}" && sudo apt -y autoremove ); then
+        abort "packages update/installation failure"
+    fi
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -134,6 +143,8 @@ function configure_environment()
     fi
 
     configure_apt_package_sources
+
+    update_and_install_packages
 
     log_event "configuration completed"
 }
