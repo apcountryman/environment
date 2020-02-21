@@ -130,6 +130,13 @@ function update_and_install_packages()
     fi
 }
 
+function configure_editor()
+{
+    if ! sudo update-alternatives --set editor "/usr/bin/vim.basic"; then
+        abort "editor configuration failure"
+    fi
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -145,6 +152,8 @@ function configure_environment()
     configure_apt_package_sources
 
     update_and_install_packages
+
+    configure_editor
 
     log_event "configuration completed"
 }
