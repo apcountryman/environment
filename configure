@@ -43,6 +43,7 @@ function display_help_text()
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --environment <type> [--ip-address <address>]"
+    echo "        [--host-hostname <hostname>]"
     echo "OPTIONS"
     echo "    --environment <type>"
     echo "        Specify the type of environment that is being configured. The following"
@@ -51,6 +52,12 @@ function display_help_text()
     echo "            vm"
     echo "    --help"
     echo "        Display this help text."
+    echo "    --host-hostname <hostname>"
+    echo "        Specify the hostname of the host a VM is resident on. This option is"
+    echo "        not supported for the 'host' environment type. This option is mandatory"
+    echo "        for the 'vm' environment type if a GitHub SSH key will be generated and"
+    echo "        installed. This option is not supported for the 'vm' environment type"
+    echo "        if a GitHub SSH key will not be generated and installed."
     echo "    --ip-address <address>"
     echo "        Specify the static IP address of a VM's host-only network interface."
     echo "        This option is not supported for the 'host' environment type. This"
@@ -63,6 +70,7 @@ function display_help_text()
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --environment host"
+    echo "    $mnemonic --environment vm --ip-address 192.168.56.2 --host-hostname foo"
     echo "    $mnemonic --environment vm --ip-address 192.168.56.2"
 }
 
@@ -192,6 +200,17 @@ function main()
                     abort "'$environment' is not a supported environment type"
                 fi
                 ;;
+            --host-hostname)
+                if [[ -n "$host_hostname" ]]; then
+                    abort "host hostname already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "host hostname not specified"
+                fi
+
+                local -r host_hostname="$1"; shift
+                ;;
             --ip-address)
                 if [[ -n "$ip_address" ]]; then
                     abort "host-only network interface static IP address already specified"
@@ -216,6 +235,10 @@ function main()
 
     if [[ -z "$environment" ]]; then
         abort "'--environment' must be specified"
+    fi
+
+    if [[ "$environment" == "host" && -n "$host_hostname" ]]; then
+        abort "'--host-hostname' is not a supported option for the 'host' environment type"
     fi
 
     if [[ "$environment" == "host" && -n "$ip_address" ]]; then
