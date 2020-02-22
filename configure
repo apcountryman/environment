@@ -43,7 +43,7 @@ function display_help_text()
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --environment <type> [--ip-address <address>]"
-    echo "        [--host-hostname <hostname>]"
+    echo "        [--host-hostname <hostname>] [--without-github-ssh-key]"
     echo "OPTIONS"
     echo "    --environment <type>"
     echo "        Specify the type of environment that is being configured. The following"
@@ -66,12 +66,15 @@ function display_help_text()
     echo "        of the address is not checked by this script."
     echo "    --version"
     echo "        Display the version of this script."
+    echo "    --without-github-ssh-key"
+    echo "        Don't generate and install a GitHub SSH key."
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --environment host"
     echo "    $mnemonic --environment vm --ip-address 192.168.56.2 --host-hostname foo"
     echo "    $mnemonic --environment vm --ip-address 192.168.56.2"
+    echo "        --without-github-ssh-key"
 }
 
 function display_version()
@@ -222,6 +225,11 @@ function main()
 
                 local -r ip_address="$1"; shift
                 ;;
+            --without-github-ssh-key)
+                if [[ -z "$without_github_ssh_key" ]]; then
+                    local -r without_github_ssh_key="true"
+                fi
+                ;;
             --*)
                 ;&
             -*)
@@ -245,6 +253,13 @@ function main()
         abort "'--ip-address' is not a supported option for the 'host' environment type"
     fi
 
+    if [[ "$environment" == "vm" && -z "$without_github_ssh_key" && -z "$host_hostname" ]]; then
+        abort "'--host-hostname' must be specified to generate and install a GitHub SSH key for the 'vm' environment type"
+    fi
+
+    if [[ "$environment" == "vm" && -n "$without_github_ssh_key" && -n "$host_hostname" ]]; then
+        abort "'--host-hostname' is not a supported option for the 'vm' environment type if a GitHub SSH key will not be generated and installed"
+    fi
     configure_environment
 }
 
