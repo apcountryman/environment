@@ -193,6 +193,31 @@ function install_virtualbox_extension_pack()
     rm -f Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack
 }
 
+function install_virtualbox_guest_additions()
+{
+    if ! sudo umount "/media/cdrom"; then
+        abort "VirtualBox guest additions unmount failure"
+    fi
+
+    if ! sudo mount "/dev/cdrom" "/media/cdrom"; then
+        abort "VirtualBox guest additions mount failure"
+    fi
+
+    sudo "/media/cdrom/VBoxLinuxAdditions.run"
+    local -r result="$?"
+    if [[ "$result" -ne 0 && "$result" -ne 2 ]]; then
+        abort "VirtualBox guest additions installation failure"
+    fi
+
+    if ! sudo umount "/media/cdrom"; then
+        abort "VirtualBox guest additions unmount failure"
+    fi
+
+    if ! eject; then
+        abort "VirtualBox guest additions ejection failure"
+    fi
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -221,6 +246,10 @@ function configure_environment()
 
     if [[ "$environment" == "host" ]]; then
         install_virtualbox_extension_pack
+    fi
+
+    if [[ "$environment" == "vm" ]]; then
+        install_virtualbox_guest_additions
     fi
 
     log_event "configuration completed"
