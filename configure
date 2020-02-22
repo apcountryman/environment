@@ -171,6 +171,17 @@ function generate_and_install_github_ssh_key()
     fi
 }
 
+function create_virtualbox_host_only_network()
+{
+    if ! vboxmanage hostonlyif create; then
+        abort "VirtualBox host-only network creation failure"
+    fi
+
+    if ! vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 --netmask 255.255.255.0; then
+        abort "VirtualBox host-only network configuration failure"
+    fi
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -191,6 +202,10 @@ function configure_environment()
 
     if [[ -n "$without_github_ssh_key" ]]; then
         generate_and_install_github_ssh_key
+    fi
+
+    if [[ "$environment" == "host" ]]; then
+        create_virtualbox_host_only_network
     fi
 
     log_event "configuration completed"
