@@ -236,7 +236,7 @@ function configure_environment()
 
     configure_editor
 
-    if [[ -n "$without_github_ssh_key" ]]; then
+    if [[ -z "$without_github_ssh_key" ]]; then
         generate_and_install_github_ssh_key
     fi
 
