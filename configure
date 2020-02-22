@@ -148,6 +148,29 @@ function configure_editor()
     fi
 }
 
+function generate_and_install_github_ssh_key()
+{
+    local -r key="$HOME/.ssh/apcountryman-github"
+
+    if [[ "$environment" == "host" ]]; then
+        local -r comment="$USER@$( hostname ) for apcountryman@github.com"
+    fi
+
+    if [[ "$environment" == "vm" ]]; then
+        local -r comment="$USER@$( hostname )@$host_hostname for apcountryman@github.com"
+    fi
+
+    if ! ssh-keygen -t rsa -b 4096 -f "$key" -C "$comment"; then
+        abort "GitHub SSH key generation failure"
+    fi
+
+    # TODO: #5
+    # shellcheck disable=SC1117
+    if ! printf "Host github.com\n    User apcountryman\n    IdentityFile %s\n    PreferredAuthentications publickey\n\n" "$key" > "$HOME/.ssh/config"; then
+        abort "GitHub SSH key installation failure"
+    fi
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -165,6 +188,10 @@ function configure_environment()
     update_and_install_packages
 
     configure_editor
+
+    if [[ -n "$without_github_ssh_key" ]]; then
+        generate_and_install_github_ssh_key
+    fi
 
     log_event "configuration completed"
 }
