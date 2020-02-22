@@ -182,6 +182,17 @@ function create_virtualbox_host_only_network()
     fi
 }
 
+function install_virtualbox_extension_pack()
+{
+    if ! ( wget https://download.virtualbox.org/virtualbox/6.1.2/Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack && sudo vboxmanage extpack install ./Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack ); then
+        rm -f Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack
+
+        abort "VirtualBox extension pack installation failure"
+    fi
+
+    rm -f Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -206,6 +217,10 @@ function configure_environment()
 
     if [[ "$environment" == "host" ]]; then
         create_virtualbox_host_only_network
+    fi
+
+    if [[ "$environment" == "host" ]]; then
+        install_virtualbox_extension_pack
     fi
 
     log_event "configuration completed"
