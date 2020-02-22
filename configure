@@ -253,6 +253,8 @@ function configure_environment()
     fi
 
     log_event "configuration completed"
+
+    sudo reboot now
 }
 
 function main()
