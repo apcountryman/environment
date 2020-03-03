@@ -11,6 +11,17 @@ SSH:
 git clone git@github.com:apcountryman/environment.git
 ```
 
+## Usage
+### Configure Environment
+To configure an environment, install Git, clone this repository, and execute the
+`configure` script. See the `configure` script's help text for usage details.
+```shell
+sudo apt update && sudo apt -y install git
+git clone https://github.com/apcountryman/environment.git
+cd environment
+./configure --help
+```
+
 ## Git Hooks
 To install this repository's Git hooks, run the `install` script located in the
 `git/hooks` directory.

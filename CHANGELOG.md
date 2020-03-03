@@ -9,3 +9,4 @@ UTC is used when determining release dates.
 - Project license (Apache License, Version 2.0).
 - Project README.
 - Project CHANGELOG.
+- [Environment configuration](https://github.com/apcountryman/environment/issues/1).
