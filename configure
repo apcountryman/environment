@@ -72,6 +72,7 @@ function display_help_text()
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --environment host"
+    echo "    $mnemonic --environment host --without-github-ssh-key"
     echo "    $mnemonic --environment vm --ip-address 192.168.56.2 --host-hostname foo"
     echo "    $mnemonic --environment vm --ip-address 192.168.56.2"
     echo "        --without-github-ssh-key"
