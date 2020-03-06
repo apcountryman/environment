@@ -65,6 +65,20 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
+function ensure_environment_has_been_configured()
+{
+    if [[ ! -e "$log_file" ]]; then
+        abort "environment has not been configured"
+    fi
+}
+
+function update_environment()
+{
+    local -r log_file="/var/log/environment"
+
+    ensure_environment_has_been_configured
+}
+
 function main()
 {
     local -r script=$( readlink -f "$0" )
@@ -113,6 +127,8 @@ function main()
     if [[ -z "$environment" ]]; then
         abort "'--environment' must be specified"
     fi
+
+    update_environment
 }
 
 main "$@"
