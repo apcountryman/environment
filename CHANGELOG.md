@@ -10,3 +10,4 @@ UTC is used when determining release dates.
 - Project README.
 - Project CHANGELOG.
 - [Environment configuration](https://github.com/apcountryman/environment/issues/1).
+- [Environment update](https://github.com/apcountryman/environment/issues/2).
