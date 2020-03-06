@@ -81,6 +81,15 @@ function log_event()
     fi
 }
 
+function update_and_install_packages()
+{
+    local packages; mapfile -t packages < <( cat "$repository/packages" "$repository/packages-$environment" | sed '/^#/ d' | sed '/^$/ d' | sort ); readonly packages
+
+    if ! ( sudo apt update && sudo apt -y dist-upgrade && sudo apt -y install "${packages[@]}" && sudo apt -y autoremove ); then
+        abort "packages update/installation failure"
+    fi
+}
+
 function update_environment()
 {
     local -r log_file="/var/log/environment"
@@ -88,6 +97,8 @@ function update_environment()
     ensure_environment_has_been_configured
 
     log_event "update started"
+
+    update_and_install_packages
 
     log_event "update completed"
 }
