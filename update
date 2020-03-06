@@ -42,7 +42,13 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
+    echo "    $mnemonic --environment <type>"
     echo "OPTIONS"
+    echo "    --environment <type>"
+    echo "        Specify the type of environment that is being updated. The following"
+    echo "        environment types are supported:"
+    echo "            host"
+    echo "            vm"
     echo "    --help"
     echo "        Display this help text."
     echo "    --version"
@@ -50,6 +56,8 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
+    echo "    $mnemonic --environment host"
+    echo "    $mnemonic --environment vm"
 }
 
 function display_version()
@@ -76,6 +84,21 @@ function main()
                 display_version
                 exit
                 ;;
+            --environment)
+                if [[ -n "$environment" ]]; then
+                    abort "environment type already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "environment type not specified"
+                fi
+
+                local -r environment="$1"; shift
+
+                if [[ "$environment" != "host" && "$environment" != "vm" ]]; then
+                    abort "'$environment' is not a supported environment type"
+                fi
+                ;;
             --*)
                 ;&
             -*)
@@ -86,6 +109,10 @@ function main()
                 ;;
         esac
     done
+
+    if [[ -z "$environment" ]]; then
+        abort "'--environment' must be specified"
+    fi
 }
 
 main "$@"
