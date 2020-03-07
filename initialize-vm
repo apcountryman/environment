@@ -75,12 +75,32 @@ function create_vm()
     fi
 }
 
+function create_sata_controller()
+{
+    local -r options=(
+        "$name"
+
+        "--name"        "$sata_controller"
+        "--add"         "sata"
+        "--controller"  "IntelAhci"
+        "--portcount"   "2"
+        "--hostiocache" "on"
+        "--bootable"    "on"
+    )
+
+    if ! vboxmanage storagectl "${options[@]}"; then
+        abort "SATA controller creation failure"
+    fi
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
     local -r name="$name_prefix-$version"
+    local -r sata_controller="sata"
 
     create_vm
+    create_sata_controller
 }
 
 function main()
