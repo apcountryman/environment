@@ -42,12 +42,16 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix <prefix> --disk-size <size>"
+    echo "    $mnemonic --name-prefix <prefix> --disk-size <size> [--installer-iso <iso>]"
     echo "OPTIONS"
     echo "    --disk-size <size>"
     echo "        Specify the VM's maximum hard disk size, in MB."
     echo "    --help"
     echo "        Display this help text."
+    echo "    --installer-iso <iso>"
+    echo "        Specify the path to the installer ISO. If an installer ISO is not"
+    echo "        specified, the Debian 10.2.0 (Buster) AMD64 network installer ISO will"
+    echo "        be downloaded and used."
     echo "    --name-prefix <prefix>"
     echo "        Specify the VM's name prefix."
     echo "    --version"
@@ -56,6 +60,8 @@ function display_help_text()
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --name-prefix foo --disk-size 262144"
+    echo "    $mnemonic --name-prefix foo --disk-size 262144"
+    echo "        --installer-iso ~/Downloads/foo.iso"
 }
 
 function display_version()
@@ -151,6 +157,17 @@ function main()
                 fi
 
                 local -r disk_size="$1"; shift
+                ;;
+            --installer-iso)
+                if [[ -n "$installer_iso" ]]; then
+                    abort "installer ISO path already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "installer ISO path not specified"
+                fi
+
+                local -r installer_iso="$1"; shift
                 ;;
             --name-prefix)
                 if [[ -n "$name_prefix" ]]; then
