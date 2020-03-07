@@ -42,8 +42,10 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix <prefix>"
+    echo "    $mnemonic --name-prefix <prefix> --disk-size <size>"
     echo "OPTIONS"
+    echo "    --disk-size <size>"
+    echo "        Specify the VM's maximum hard disk size, in MB."
     echo "    --help"
     echo "        Display this help text."
     echo "    --name-prefix <prefix>"
@@ -53,7 +55,7 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix foo"
+    echo "    $mnemonic --name-prefix foo --disk-size 262144"
 }
 
 function display_version()
@@ -122,6 +124,17 @@ function main()
                 display_version
                 exit
                 ;;
+            --disk-size)
+                if [[ -n "$disk_size" ]]; then
+                    abort "maximum hard disk size already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "maximum hard disk size not specified"
+                fi
+
+                local -r disk_size="$1"; shift
+                ;;
             --name-prefix)
                 if [[ -n "$name_prefix" ]]; then
                     abort "name prefix already specified"
@@ -143,6 +156,10 @@ function main()
                 ;;
         esac
     done
+
+    if [[ -z "$disk_size" ]]; then
+        abort "'--disk-size' must be specified"
+    fi
 
     if [[ -z "$name_prefix" ]]; then
         abort "'--name-prefix' must be specified"
