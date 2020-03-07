@@ -95,14 +95,31 @@ function create_sata_controller()
     fi
 }
 
+function create_disk()
+{
+    local -r options=(
+        "disk"
+
+        "--filename" "$disk"
+        "--size"     "$disk_size"
+        "--format"   "VDI"
+    )
+
+    if ! vboxmanage createmedium "${options[@]}"; then
+        abort "hard disk creation failure"
+    fi
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
     local -r name="$name_prefix-$version"
     local -r sata_controller="sata"
+    local -r disk="$vms/$name/$name.vdi"
 
     create_vm
     create_sata_controller
+    create_disk
 }
 
 function main()
