@@ -50,7 +50,7 @@ function display_help_text()
     echo "        Display this help text."
     echo "    --installer-iso <iso>"
     echo "        Specify the path to the installer ISO. If an installer ISO is not"
-    echo "        specified, the Debian 10.2.0 (Buster) AMD64 network installer ISO will"
+    echo "        specified, the Debian 10.3.0 (Buster) AMD64 network installer ISO will"
     echo "        be downloaded and used."
     echo "    --name-prefix <prefix>"
     echo "        Specify the VM's name prefix."
@@ -116,6 +116,34 @@ function create_disk()
     fi
 }
 
+function attach_optical_drive()
+{
+    if [[ -z "$installer_iso" ]]; then
+        local -r installer_iso="$HOME/Downloads/debian-10.3.0-amd64-netinst.iso"
+
+        if ! wget -O "$installer_iso" https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-10.3.0-amd64-netinst.iso; then
+            abort "Debian 10.3.0 (Buster) AMD64 network installer ISO download failure"
+        fi
+    fi
+
+    local -r options=(
+        "$name"
+
+        "--storagectl"   "$sata_controller"
+        "--device"       "0"
+        "--port"         "0"
+        "--type"         "dvddrive"
+        "--medium"       "$installer_iso"
+        "--passthrough"  "off"
+        "--hotpluggable" "off"
+        "--tempeject"    "off"
+    )
+
+    if ! vboxmanage storageattach "${options[@]}"; then
+        abort "optical drive attachment failure"
+    fi
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
@@ -126,6 +154,7 @@ function initialize_vm()
     create_vm
     create_sata_controller
     create_disk
+    attach_optical_drive
 }
 
 function main()
