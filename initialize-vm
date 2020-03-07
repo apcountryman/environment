@@ -61,6 +61,28 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
+function create_vm()
+{
+    local -r options=(
+        "--name"       "$name"
+        "--basefolder" "$vms"
+        "--ostype"     "Debian_64"
+        "--register"
+    )
+
+    if ! vboxmanage createvm "${options[@]}"; then
+        abort "VM creation failure"
+    fi
+}
+
+function initialize_vm()
+{
+    local -r vms="$HOME/virtual_machines"
+    local -r name="$name_prefix-$version"
+
+    create_vm
+}
+
 function main()
 {
     local -r script=$( readlink -f "$0" )
@@ -105,6 +127,8 @@ function main()
     if [[ -z "$name_prefix" ]]; then
         abort "'--name-prefix' must be specified"
     fi
+
+    initialize_vm
 }
 
 main "$@"
