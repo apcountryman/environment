@@ -144,6 +144,27 @@ function attach_optical_drive()
     fi
 }
 
+function attach_disk()
+{
+    local -r options=(
+        "$name"
+
+        "--storagectl"    "$sata_controller"
+        "--device"        "0"
+        "--port"          "1"
+        "--type"          "hdd"
+        "--medium"        "$disk"
+        "--mtype"         "normal"
+        "--nonrotational" "off"
+        "--discard"       "off"
+        "--hotpluggable"  "off"
+    )
+
+    if ! vboxmanage storageattach "${options[@]}"; then
+        abort "hard disk attachment failure"
+    fi
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
@@ -155,6 +176,7 @@ function initialize_vm()
     create_sata_controller
     create_disk
     attach_optical_drive
+    attach_disk
 }
 
 function main()
