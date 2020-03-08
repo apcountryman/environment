@@ -42,11 +42,13 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name <name>"
-    echo "    $mnemonic --name-prefix <prefix>"
+    echo "    $mnemonic --name <name> --ip-address <address>"
+    echo "    $mnemonic --name-prefix <prefix> --ip-address <address>"
     echo "OPTIONS"
     echo "    --help"
     echo "        Display this help text."
+    echo "    --ip-address <address>"
+    echo "        Specify the remote host's IP address."
     echo "    --name <name>"
     echo "        Specify the remote host's name."
     echo "    --name-prefix <prefix>"
@@ -56,8 +58,8 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name foo"
-    echo "    $mnemonic --name-prefix foo"
+    echo "    $mnemonic --name foo --ip-address 192.168.56.2"
+    echo "    $mnemonic --name-prefix foo --ip-address 192.168.56.2"
 }
 
 function display_version()
@@ -83,6 +85,17 @@ function main()
             --version)
                 display_version
                 exit
+                ;;
+            --ip-address)
+                if [[ -n "$ip_address" ]]; then
+                    abort "remote host IP address already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "remote host IP address not specified"
+                fi
+
+                local -r ip_address="$1"; shift
                 ;;
             --name)
                 if [[ -n "$name" ]]; then
@@ -116,6 +129,10 @@ function main()
                 ;;
         esac
     done
+
+    if [[ -z "$ip_address" ]]; then
+        abort "'--ip-address' must be specified"
+    fi
 
     if [[ -z "$name" ]]; then
         abort "'--name' or '--name-prefix' must be specified"
