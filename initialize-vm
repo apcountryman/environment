@@ -249,6 +249,19 @@ function await_customization_completion()
     done
 }
 
+function start_vm()
+{
+    local -r options=(
+        "$name"
+
+        "--type" "gui"
+    )
+
+    if ! vboxmanage startvm "${options[@]}"; then
+        abort "VM start failure"
+    fi
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
@@ -263,6 +276,7 @@ function initialize_vm()
     attach_disk
     configure_vm
     await_customization_completion
+    start_vm
 }
 
 function main()
