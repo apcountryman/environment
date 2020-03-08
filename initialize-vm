@@ -240,6 +240,15 @@ function configure_vm()
     fi
 }
 
+function await_customization_completion()
+{
+    local response="no"
+
+    while [[ "$response" != "yes" ]]; do
+        read -r -p "Customization is complete (yes/no)? " response
+    done
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
@@ -253,6 +262,7 @@ function initialize_vm()
     attach_optical_drive
     attach_disk
     configure_vm
+    await_customization_completion
 }
 
 function main()
