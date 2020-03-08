@@ -42,7 +42,7 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix <prefix> --description <description>"
+    echo "    $mnemonic --name-prefix <prefix> --description <description> --ram <size>"
     echo "        --disk-size <size> [--installer-iso <iso>]"
     echo "OPTIONS"
     echo "    --description <description>"
@@ -57,13 +57,15 @@ function display_help_text()
     echo "        be downloaded and used."
     echo "    --name-prefix <prefix>"
     echo "        Specify the VM's name prefix."
+    echo "    --ram <size>"
+    echo "        Specify the VM's RAM size, in MB."
     echo "    --version"
     echo "        Display the version of this script."
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix foo --description Foo --disk-size 262144"
-    echo "    $mnemonic --name-prefix foo --description Foo --disk-size 262144"
+    echo "    $mnemonic --name-prefix foo --description Foo --ram 4096 --disk-size 262144"
+    echo "    $mnemonic --name-prefix foo --description Foo --ram 4096 --disk-size 262144"
     echo "        --installer-iso ~/Downloads/foo.iso"
 }
 
@@ -245,6 +247,17 @@ function main()
 
                 local -r name_prefix="$1"; shift
                 ;;
+            --ram)
+                if [[ -n "$ram" ]]; then
+                    abort "RAM size already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "RAM size not specified"
+                fi
+
+                local -r ram="$1"; shift
+                ;;
             --*)
                 ;&
             -*)
@@ -266,6 +279,10 @@ function main()
 
     if [[ -z "$name_prefix" ]]; then
         abort "'--name-prefix' must be specified"
+    fi
+
+    if [[ -z "$ram" ]]; then
+        abort "'--ram' must be specified"
     fi
 
     initialize_vm
