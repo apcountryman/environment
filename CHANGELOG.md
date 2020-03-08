@@ -12,3 +12,4 @@ UTC is used when determining release dates.
 - [Environment configuration](https://github.com/apcountryman/environment/issues/1).
 - [Environment update](https://github.com/apcountryman/environment/issues/2).
 - [VM initialization](https://github.com/apcountryman/environment/issues/3).
+- [SSH connection addition](https://github.com/apcountryman/environment/issues/4).
