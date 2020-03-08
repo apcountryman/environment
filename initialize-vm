@@ -174,6 +174,72 @@ function attach_disk()
     fi
 }
 
+function configure_vm()
+{
+    local -r options=(
+        "$name"
+
+        "--snapshotfolder" "default"
+        "--clipboard-mode" "disabled"
+        "--draganddrop"    "disabled"
+
+        "--description" "($version) $description"
+
+        "--memory"    "$ram"
+        "--boot1"     "dvd"
+        "--boot2"     "disk"
+        "--boot3"     "none"
+        "--boot4"     "none"
+        "--chipset"   "piix3"
+        "--mouse"     "usbtablet"
+        "--apic"      "on"
+        "--ioapic"    "on"
+        "--firmware"  "bios"
+        "--rtcuseutc" "on"
+
+        "--cpus"            "$processors"
+        "--cpuexecutioncap" "100"
+        "--pae"             "on"
+
+        "--paravirtprovider" "default"
+        "--hwvirtex"         "on"
+        "--nestedpaging"     "on"
+
+        "--vram"               "128"
+        "--monitorcount"       "1"
+        "--graphicscontroller" "vmsvga"
+        "--accelerate2dvideo"  "off"
+        "--accelerate3d"       "off"
+        "--vrde"               "off"
+        "--recording"          "off"
+
+        "--audio"           "pulse"
+        "--audiocontroller" "ac97"
+        "--audiocodec"      "ad1980"
+        "--audioout"        "on"
+        "--audioin"         "off"
+
+        "--nic1"            "nat"
+        "--nictype1"        "82540EM"
+        "--macaddress1"     "auto"
+        "--cableconnected1" "on"
+
+        "--nic2"             "hostonly"
+        "--hostonlyadapter2" "vboxnet0"
+        "--nictype2"         "82540EM"
+        "--macaddress2"      "auto"
+        "--cableconnected2"  "on"
+
+        "--usb"     "off"
+        "--usbehci" "off"
+        "--usbxhci" "on"
+    )
+
+    if ! vboxmanage modifyvm "${options[@]}"; then
+        abort "VM configuration failure"
+    fi
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
@@ -186,6 +252,7 @@ function initialize_vm()
     create_disk
     attach_optical_drive
     attach_disk
+    configure_vm
 }
 
 function main()
