@@ -280,6 +280,26 @@ function await_shutdown()
     done
 }
 
+function insert_guest_additions_iso()
+{
+    local -r options=(
+        "$name"
+
+        "--storagectl"   "$sata_controller"
+        "--device"       "0"
+        "--port"         "0"
+        "--type"         "dvddrive"
+        "--medium"       "additions"
+        "--passthrough"  "off"
+        "--hotpluggable" "off"
+        "--tempeject"    "off"
+    )
+
+    if ! vboxmanage storageattach "${options[@]}"; then
+        abort "VirtualBox guest additions ISO insertion failure"
+    fi
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
@@ -297,6 +317,7 @@ function initialize_vm()
     start_vm
     await_install_completion
     await_shutdown
+    insert_guest_additions_iso
 }
 
 function main()
