@@ -42,8 +42,11 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix <prefix> --disk-size <size> [--installer-iso <iso>]"
+    echo "    $mnemonic --name-prefix <prefix> --description <description>"
+    echo "        --disk-size <size> [--installer-iso <iso>]"
     echo "OPTIONS"
+    echo "    --description <description>"
+    echo "        Specify the VM's description."
     echo "    --disk-size <size>"
     echo "        Specify the VM's maximum hard disk size, in MB."
     echo "    --help"
@@ -59,8 +62,8 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix foo --disk-size 262144"
-    echo "    $mnemonic --name-prefix foo --disk-size 262144"
+    echo "    $mnemonic --name-prefix foo --description Foo --disk-size 262144"
+    echo "    $mnemonic --name-prefix foo --description Foo --disk-size 262144"
     echo "        --installer-iso ~/Downloads/foo.iso"
 }
 
@@ -198,6 +201,17 @@ function main()
                 display_version
                 exit
                 ;;
+            --description)
+                if [[ -n "$description" ]]; then
+                    abort "description already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "description not specified"
+                fi
+
+                local -r description="$1"; shift
+                ;;
             --disk-size)
                 if [[ -n "$disk_size" ]]; then
                     abort "maximum hard disk size already specified"
@@ -241,6 +255,10 @@ function main()
                 ;;
         esac
     done
+
+    if [[ -z "$description" ]]; then
+        abort "'--description' must be specified"
+    fi
 
     if [[ -z "$disk_size" ]]; then
         abort "'--disk-size' must be specified"
