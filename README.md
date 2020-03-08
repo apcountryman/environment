@@ -37,6 +37,13 @@ See the `update` script's help text for usage details.
 ./update --help
 ```
 
+### Add SSH Connection
+To add an SSH connection, execute the `add-ssh-connection` script.
+See the `add-ssh-connection` script's help text for usage details.
+```shell
+./add-ssh-connection --help
+```
+
 ## Git Hooks
 To install this repository's Git hooks, execute the `install` script located in the
 `git/hooks` directory.

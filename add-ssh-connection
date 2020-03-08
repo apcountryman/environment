@@ -15,7 +15,7 @@
 # permissions and limitations under the License.
 
 # File: add-ssh-connection
-# Description: Add a SSH connection.
+# Description: Add an SSH connection.
 
 function error()
 {
@@ -38,7 +38,7 @@ function abort()
 function display_help_text()
 {
     echo "NAME"
-    echo "    $mnemonic - Add a SSH connection."
+    echo "    $mnemonic - Add an SSH connection."
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
