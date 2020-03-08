@@ -77,11 +77,21 @@ function generate_key()
     fi
 }
 
+function install_local_key()
+{
+    # TODO: #5
+    # shellcheck disable=SC1117
+    if ! printf "Host %s\n    HostName %s\n    User %s\n    IdentityFile %s\n    PreferredAuthentications publickey\n\n" "$name" "$ip_address" "$USER" "$private_key" >> "$HOME/.ssh/config"; then
+        abort "local SSH key installation failure"
+    fi
+}
+
 function add_ssh_connection()
 {
     local -r private_key="$HOME/.ssh/$USER-$name"
 
     generate_key
+    install_local_key
 }
 
 function main()
