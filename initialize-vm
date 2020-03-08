@@ -271,6 +271,15 @@ function await_install_completion()
     done
 }
 
+function await_shutdown()
+{
+    local response="no"
+
+    while [[ "$response" != "yes" ]]; do
+        read -r -p "VM is shutdown (yes/no)? " response
+    done
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
@@ -287,6 +296,7 @@ function initialize_vm()
     await_customization_completion
     start_vm
     await_install_completion
+    await_shutdown
 }
 
 function main()
