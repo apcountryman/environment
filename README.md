@@ -12,6 +12,13 @@ git clone git@github.com:apcountryman/environment.git
 ```
 
 ## Usage
+### Initialize VM
+To initialize a VM, execute the `initialize-vm` script.
+See the `initialize-vm` script's help test for usage details.
+```shell
+./initialize-vm --help
+```
+
 ### Configure Environment
 To configure an environment, install Git, clone this repository, and execute the
 `configure` script.
