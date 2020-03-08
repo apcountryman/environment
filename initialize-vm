@@ -300,6 +300,20 @@ function insert_guest_additions_iso()
     fi
 }
 
+function take_post_install_snapshot()
+{
+    local -r options=(
+        "$name"
+
+        "take"          "post-install"
+        "--description" "post-install"
+    )
+
+    if ! vboxmanage snapshot "${options[@]}"; then
+        abort "snapshot failure"
+    fi
+}
+
 function initialize_vm()
 {
     local -r vms="$HOME/virtual_machines"
@@ -318,6 +332,7 @@ function initialize_vm()
     await_install_completion
     await_shutdown
     insert_guest_additions_iso
+    take_post_install_snapshot
 }
 
 function main()
