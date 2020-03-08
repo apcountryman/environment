@@ -42,8 +42,9 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix <prefix> --description <description> --ram <size>"
-    echo "        --disk-size <size> [--installer-iso <iso>]"
+    echo "    $mnemonic --name-prefix <prefix> --description <description>"
+    echo "        --processors <processors> --ram <size> --disk-size <size>"
+    echo "        [--installer-iso <iso>]"
     echo "OPTIONS"
     echo "    --description <description>"
     echo "        Specify the VM's description."
@@ -57,6 +58,8 @@ function display_help_text()
     echo "        be downloaded and used."
     echo "    --name-prefix <prefix>"
     echo "        Specify the VM's name prefix."
+    echo "    --processors <processors>"
+    echo "        Specify the VM's processor count."
     echo "    --ram <size>"
     echo "        Specify the VM's RAM size, in MB."
     echo "    --version"
@@ -64,9 +67,10 @@ function display_help_text()
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic --name-prefix foo --description Foo --ram 4096 --disk-size 262144"
-    echo "    $mnemonic --name-prefix foo --description Foo --ram 4096 --disk-size 262144"
-    echo "        --installer-iso ~/Downloads/foo.iso"
+    echo "    $mnemonic --name-prefix foo --description Foo --processors 2 --ram 4096"
+    echo "        --disk-size 262144"
+    echo "    $mnemonic --name-prefix foo --description Foo --processors 2 --ram 4096"
+    echo "        --disk-size 262144 --installer-iso ~/Downloads/foo.iso"
 }
 
 function display_version()
@@ -247,6 +251,17 @@ function main()
 
                 local -r name_prefix="$1"; shift
                 ;;
+            --processors)
+                if [[ -n "$processors" ]]; then
+                    abort "processor count already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "processor count not specified"
+                fi
+
+                local -r processors="$1"; shift
+                ;;
             --ram)
                 if [[ -n "$ram" ]]; then
                     abort "RAM size already specified"
@@ -279,6 +294,10 @@ function main()
 
     if [[ -z "$name_prefix" ]]; then
         abort "'--name-prefix' must be specified"
+    fi
+
+    if [[ -z "$processors" ]]; then
+        abort "'--processors' must be specified"
     fi
 
     if [[ -z "$ram" ]]; then
