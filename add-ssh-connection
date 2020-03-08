@@ -86,12 +86,21 @@ function install_local_key()
     fi
 }
 
+function install_remote_key()
+{
+    if ! ssh-copy-id -i "$public_key" "$USER@$ip_address"; then
+        abort "remote SSH key installation failure"
+    fi
+}
+
 function add_ssh_connection()
 {
     local -r private_key="$HOME/.ssh/$USER-$name"
+    local -r public_key="$private_key.pub"
 
     generate_key
     install_local_key
+    install_remote_key
 }
 
 function main()
