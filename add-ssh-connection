@@ -70,6 +70,20 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
+function generate_key()
+{
+    if ! ssh-keygen -t rsa -b 4096 -f "$private_key" -C "$key_comment"; then
+        abort "SSH key generation failure"
+    fi
+}
+
+function add_ssh_connection()
+{
+    local -r private_key="$HOME/.ssh/$USER-$name"
+
+    generate_key
+}
+
 function main()
 {
     local -r script=$( readlink -f "$0" )
@@ -155,6 +169,8 @@ function main()
     if [[ -z "$name" ]]; then
         abort "'--name' or '--name-prefix' must be specified"
     fi
+
+    add_ssh_connection
 }
 
 main "$@"
