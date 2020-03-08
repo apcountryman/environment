@@ -42,16 +42,18 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic"
+    echo "    $mnemonic --name <name>"
     echo "OPTIONS"
     echo "    --help"
     echo "        Display this help text."
+    echo "    --name <name>"
+    echo "        Specify the remote host's name."
     echo "    --version"
     echo "        Display the version of this script."
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic"
+    echo "    $mnemonic --name foo"
 }
 
 function display_version()
@@ -78,6 +80,17 @@ function main()
                 display_version
                 exit
                 ;;
+            --name)
+                if [[ -n "$name" ]]; then
+                    abort "remote host name / name prefix already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "remote host name not specified"
+                fi
+
+                local -r name="$1"; shift
+                ;;
             --*)
                 ;&
             -*)
@@ -88,6 +101,10 @@ function main()
                 ;;
         esac
     done
+
+    if [[ -z "$name" ]]; then
+        abort "'--name' must be specified"
+    fi
 }
 
 main "$@"
