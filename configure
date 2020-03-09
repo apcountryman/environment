@@ -1,0 +1,360 @@
+#!/usr/bin/env bash
+
+# environment
+#
+# Copyright 2020 Andrew Countryman <apcountryman@gmail.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+# file except in compliance with the License. You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+# File: configure
+# Description: Configure a host or VM.
+
+function error()
+{
+    local -r message="$1"
+
+    ( >&2 echo "$mnemonic: $message" )
+}
+
+function abort()
+{
+    if [[ "$#" -gt 0 ]]; then
+        local -r message="$1"
+
+        error "$message, aborting"
+    fi
+
+    exit 1
+}
+
+function display_help_text()
+{
+    echo "NAME"
+    echo "    $mnemonic - Configure a host or VM."
+    echo "SYNOPSIS"
+    echo "    $mnemonic --help"
+    echo "    $mnemonic --version"
+    echo "    $mnemonic --environment <type> [--ip-address <address>]"
+    echo "        [--host-hostname <hostname>] [--without-github-ssh-key]"
+    echo "OPTIONS"
+    echo "    --environment <type>"
+    echo "        Specify the type of environment that is being configured. The following"
+    echo "        environment types are supported:"
+    echo "            host"
+    echo "            vm"
+    echo "    --help"
+    echo "        Display this help text."
+    echo "    --host-hostname <hostname>"
+    echo "        Specify the hostname of the host a VM is resident on. This option is"
+    echo "        not supported for the 'host' environment type. This option is mandatory"
+    echo "        for the 'vm' environment type if a GitHub SSH key will be generated and"
+    echo "        installed. This option is not supported for the 'vm' environment type"
+    echo "        if a GitHub SSH key will not be generated and installed."
+    echo "    --ip-address <address>"
+    echo "        Specify the static IP address of a VM's host-only network interface."
+    echo "        This option is not supported for the 'host' environment type. This"
+    echo "        option is mandatory for the 'vm' environment type. The IP address must"
+    echo "        be in the 192.168.56.0/24 network and not be 192.168.56.1. The validity"
+    echo "        of the address is not checked by this script."
+    echo "    --version"
+    echo "        Display the version of this script."
+    echo "    --without-github-ssh-key"
+    echo "        Don't generate and install a GitHub SSH key."
+    echo "EXAMPLES"
+    echo "    $mnemonic --help"
+    echo "    $mnemonic --version"
+    echo "    $mnemonic --environment host"
+    echo "    $mnemonic --environment host --without-github-ssh-key"
+    echo "    $mnemonic --environment vm --ip-address 192.168.56.2 --host-hostname foo"
+    echo "    $mnemonic --environment vm --ip-address 192.168.56.2"
+    echo "        --without-github-ssh-key"
+}
+
+function display_version()
+{
+    echo "$mnemonic, version $version"
+}
+
+function ensure_environment_has_not_been_configured()
+{
+    if [[ -e "$log_file" ]]; then
+        abort "environment has already been configured"
+    fi
+}
+
+function log_event()
+{
+    local -r event="$1"
+
+    if ! echo "$( date --utc +'%F %H:%M:%S' ) ($version) - $event" | sudo tee -a "$log_file"; then
+        abort "log failure"
+    fi
+}
+
+function configure_host_only_network_interface()
+{
+    # TODO: #5
+    # shellcheck disable=SC1117
+    if ! printf "allow-hotplug enp0s8\niface enp0s8 inet static\n    address %s\n    netmask 255.255.255.0\n" "$ip_address" | sudo tee "/etc/network/interfaces.d/host-only"; then
+        abort "host-only network interface configuration failure"
+    fi
+}
+
+function configure_apt_package_sources()
+{
+    if ! sudo sed -i '/^deb/ s/$/ contrib non-free/' "/etc/apt/sources.list"; then
+        abort "apt package sources configuration failure"
+    fi
+
+    if ! sudo apt-key add "$repository/apt/keys/google/linux_signing_key.pub"; then
+        abort "Google apt package signing key installation failure"
+    fi
+
+    if ! echo "deb http://dl.google.com/linux/chrome/deb stable main" | sudo tee "/etc/apt/sources.list.d/google-chrome.list"; then
+        abort "Google Chrome apt package repository configuration failure"
+    fi
+
+    if [[ "$environment" == "host" ]]; then
+        if ! sudo apt-key add "$repository/apt/keys/oracle/oracle_vbox_2016.asc"; then
+            abort "VirtualBox apt package signing key installation failure"
+        fi
+
+        if ! echo "deb https://download.virtualbox.org/virtualbox/debian buster contrib" | sudo tee "/etc/apt/sources.list.d/virtualbox.list"; then
+            abort "VirtualBox apt package repository configuration failure"
+        fi
+    fi
+}
+
+function update_and_install_packages()
+{
+    local packages; mapfile -t packages < <( cat "$repository/packages" "$repository/packages-$environment" | sed '/^#/ d' | sed '/^$/ d' | sort ); readonly packages
+
+    if ! ( sudo apt update && sudo apt -y dist-upgrade && sudo apt -y install "${packages[@]}" && sudo apt -y autoremove ); then
+        abort "packages update/installation failure"
+    fi
+}
+
+function configure_editor()
+{
+    if ! sudo update-alternatives --set editor "/usr/bin/vim.basic"; then
+        abort "editor configuration failure"
+    fi
+}
+
+function generate_and_install_github_ssh_key()
+{
+    local -r key="$HOME/.ssh/apcountryman-github"
+
+    if [[ "$environment" == "host" ]]; then
+        local -r comment="$USER@$( hostname ) for apcountryman@github.com"
+    fi
+
+    if [[ "$environment" == "vm" ]]; then
+        local -r comment="$USER@$( hostname )@$host_hostname for apcountryman@github.com"
+    fi
+
+    if ! ssh-keygen -t rsa -b 4096 -f "$key" -C "$comment"; then
+        abort "GitHub SSH key generation failure"
+    fi
+
+    # TODO: #5
+    # shellcheck disable=SC1117
+    if ! printf "Host github.com\n    User apcountryman\n    IdentityFile %s\n    PreferredAuthentications publickey\n\n" "$key" > "$HOME/.ssh/config"; then
+        abort "GitHub SSH key installation failure"
+    fi
+}
+
+function create_virtualbox_host_only_network()
+{
+    if ! vboxmanage hostonlyif create; then
+        abort "VirtualBox host-only network creation failure"
+    fi
+
+    if ! vboxmanage hostonlyif ipconfig vboxnet0 --ip 192.168.56.1 --netmask 255.255.255.0; then
+        abort "VirtualBox host-only network configuration failure"
+    fi
+}
+
+function install_virtualbox_extension_pack()
+{
+    if ! ( wget https://download.virtualbox.org/virtualbox/6.1.4/Oracle_VM_VirtualBox_Extension_Pack-6.1.4.vbox-extpack && sudo vboxmanage extpack install ./*.vbox-extpack ); then
+        rm -f ./*.vbox-extpack
+
+        abort "VirtualBox extension pack installation failure"
+    fi
+
+    rm -f ./*.vbox-extpack
+}
+
+function install_virtualbox_guest_additions()
+{
+    if ! sudo umount "/media/cdrom"; then
+        abort "VirtualBox guest additions unmount failure"
+    fi
+
+    if ! sudo mount "/dev/cdrom" "/media/cdrom"; then
+        abort "VirtualBox guest additions mount failure"
+    fi
+
+    sudo "/media/cdrom/VBoxLinuxAdditions.run"
+    local -r result="$?"
+    if [[ "$result" -ne 0 && "$result" -ne 2 ]]; then
+        abort "VirtualBox guest additions installation failure"
+    fi
+
+    if ! sudo umount "/media/cdrom"; then
+        abort "VirtualBox guest additions unmount failure"
+    fi
+
+    if ! eject; then
+        abort "VirtualBox guest additions ejection failure"
+    fi
+}
+
+function configure_environment()
+{
+    local -r log_file="/var/log/environment"
+
+    ensure_environment_has_not_been_configured
+
+    log_event "configuration started"
+
+    if [[ "$environment" == "vm" ]]; then
+        configure_host_only_network_interface
+    fi
+
+    configure_apt_package_sources
+
+    update_and_install_packages
+
+    configure_editor
+
+    if [[ -z "$without_github_ssh_key" ]]; then
+        generate_and_install_github_ssh_key
+    fi
+
+    if [[ "$environment" == "host" ]]; then
+        create_virtualbox_host_only_network
+    fi
+
+    if [[ "$environment" == "host" ]]; then
+        install_virtualbox_extension_pack
+    fi
+
+    if [[ "$environment" == "vm" ]]; then
+        install_virtualbox_guest_additions
+    fi
+
+    log_event "configuration completed"
+
+    sudo reboot now
+}
+
+function main()
+{
+    local -r script=$( readlink -f "$0" )
+    local -r mnemonic=$( basename "$script" )
+    local -r repository=$( dirname "$script" )
+    local -r version=$( git -C "$repository" describe --always --dirty --broken )
+
+    while [[ "$#" -gt 0 ]]; do
+        local argument="$1"; shift
+
+        case "$argument" in
+            --help)
+                display_help_text
+                exit
+                ;;
+            --version)
+                display_version
+                exit
+                ;;
+            --environment)
+                if [[ -n "$environment" ]]; then
+                    abort "environment type already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "environment type not specified"
+                fi
+
+                local -r environment="$1"; shift
+
+                if [[ "$environment" != "host" && "$environment" != "vm" ]]; then
+                    abort "'$environment' is not a supported environment type"
+                fi
+                ;;
+            --host-hostname)
+                if [[ -n "$host_hostname" ]]; then
+                    abort "host hostname already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "host hostname not specified"
+                fi
+
+                local -r host_hostname="$1"; shift
+                ;;
+            --ip-address)
+                if [[ -n "$ip_address" ]]; then
+                    abort "host-only network interface static IP address already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "host-only network interface static IP address not specified"
+                fi
+
+                local -r ip_address="$1"; shift
+                ;;
+            --without-github-ssh-key)
+                if [[ -z "$without_github_ssh_key" ]]; then
+                    local -r without_github_ssh_key="true"
+                fi
+                ;;
+            --*)
+                ;&
+            -*)
+                abort "'$argument' is not a supported option"
+                ;;
+            *)
+                abort "'$argument' is not a valid argument"
+                ;;
+        esac
+    done
+
+    if [[ -z "$environment" ]]; then
+        abort "'--environment' must be specified"
+    fi
+
+    if [[ "$environment" == "host" && -n "$host_hostname" ]]; then
+        abort "'--host-hostname' is not a supported option for the 'host' environment type"
+    fi
+
+    if [[ "$environment" == "host" && -n "$ip_address" ]]; then
+        abort "'--ip-address' is not a supported option for the 'host' environment type"
+    fi
+
+    if [[ "$environment" == "vm" && -z "$without_github_ssh_key" && -z "$host_hostname" ]]; then
+        abort "'--host-hostname' must be specified to generate and install a GitHub SSH key for the 'vm' environment type"
+    fi
+
+    if [[ "$environment" == "vm" && -n "$without_github_ssh_key" && -n "$host_hostname" ]]; then
+        abort "'--host-hostname' is not a supported option for the 'vm' environment type if a GitHub SSH key will not be generated and installed"
+    fi
+
+    if [[ "$environment" == "vm" && -z "$ip_address" ]]; then
+        abort "'--ip-address' must be specified for the 'vm' environment type"
+    fi
+
+    configure_environment
+}
+
+main "$@"
