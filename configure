@@ -185,13 +185,13 @@ function create_virtualbox_host_only_network()
 
 function install_virtualbox_extension_pack()
 {
-    if ! ( wget https://download.virtualbox.org/virtualbox/6.1.2/Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack && sudo vboxmanage extpack install ./Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack ); then
-        rm -f Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack
+    if ! ( wget https://download.virtualbox.org/virtualbox/6.1.4/Oracle_VM_VirtualBox_Extension_Pack-6.1.4.vbox-extpack && sudo vboxmanage extpack install ./*.vbox-extpack ); then
+        rm -f ./*.vbox-extpack
 
         abort "VirtualBox extension pack installation failure"
     fi
 
-    rm -f Oracle_VM_VirtualBox_Extension_Pack-6.1.2.vbox-extpack
+    rm -f ./*.vbox-extpack
 }
 
 function install_virtualbox_guest_additions()
