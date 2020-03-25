@@ -23,6 +23,7 @@ cmake
 cmake-curses-gui
 colordiff
 cowsay
+cppcheck
 cups-pdf
 doxygen
 doxygen-doc
