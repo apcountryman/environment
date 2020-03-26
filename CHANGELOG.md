@@ -6,6 +6,14 @@ UTC is used when determining release dates.
 
 ## [Unreleased](https://github.com/apcountryman/environment/compare/master...develop)
 
+## [0.2.0](https://github.com/apcountryman/environment/compare/0.1.0...0.2.0) - 2020-03-26
+### Added
+- [`remmina` to host package list](https://github.com/apcountryman/environment/issues/14).
+- [`cppcheck` to package list](https://github.com/apcountryman/environment/issues/15).
+- [`clang` to package list](https://github.com/apcountryman/environment/issues/16).
+- [`clang-format` to package list](https://github.com/apcountryman/environment/issues/17).
+- [`clang-tidy` to package list](https://github.com/apcountryman/environment/issues/18).
+
 ## [0.1.0](https://github.com/apcountryman/environment/compare/0.0.0...0.1.0) - 2020-03-09
 ### Added
 - Repository Git ignore rules.

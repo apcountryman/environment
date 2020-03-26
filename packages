@@ -19,10 +19,14 @@ autogen
 avrdude
 avrdude-doc
 biber
+clang
+clang-format
+clang-tidy
 cmake
 cmake-curses-gui
 colordiff
 cowsay
+cppcheck
 cups-pdf
 doxygen
 doxygen-doc
