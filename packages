@@ -20,6 +20,7 @@ avrdude
 avrdude-doc
 biber
 clang
+clang-format
 cmake
 cmake-curses-gui
 colordiff
