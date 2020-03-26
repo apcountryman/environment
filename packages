@@ -19,6 +19,7 @@ autogen
 avrdude
 avrdude-doc
 biber
+clang
 cmake
 cmake-curses-gui
 colordiff
