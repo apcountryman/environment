@@ -9,6 +9,7 @@ UTC is used when determining release dates.
 - [`remmina` to host package list](https://github.com/apcountryman/environment/issues/14).
 - [`cppcheck` to package list](https://github.com/apcountryman/environment/issues/15).
 - [`clang` to package list](https://github.com/apcountryman/environment/issues/16).
+- [`clang-format` to package list](https://github.com/apcountryman/environment/issues/17).
 
 ## [0.1.0](https://github.com/apcountryman/environment/compare/0.0.0...0.1.0) - 2020-03-09
 ### Added
