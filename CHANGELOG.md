@@ -5,6 +5,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 UTC is used when determining release dates.
 
 ## [Unreleased](https://github.com/apcountryman/environment/compare/master...develop)
+
+## [0.2.0](https://github.com/apcountryman/environment/compare/0.1.0...0.2.0) - 2020-03-26
 ### Added
 - [`remmina` to host package list](https://github.com/apcountryman/environment/issues/14).
 - [`cppcheck` to package list](https://github.com/apcountryman/environment/issues/15).
