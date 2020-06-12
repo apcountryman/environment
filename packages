@@ -24,6 +24,7 @@ clang-format
 clang-tidy
 cmake
 cmake-curses-gui
+cmatrix
 colordiff
 cowsay
 cppcheck
