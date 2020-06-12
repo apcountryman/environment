@@ -13,6 +13,9 @@ UTC is used when determining release dates.
 - [`modemmanager` purge to environment configuration](https://github.com/apcountryman/environment/issues/28).
 - [User to groups during environment configuration](https://github.com/apcountryman/environment/issues/29).
 
+### Changed
+- [Update Git hooks install script](https://github.com/apcountryman/environment/issues/37).
+
 ### Removed
 - [Installation of VirtualBox extension packs](https://github.com/apcountryman/environment/issues/30).
 - [Default VM installer ISO](https://github.com/apcountryman/environment/issues/33).

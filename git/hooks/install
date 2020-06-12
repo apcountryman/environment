@@ -86,9 +86,7 @@ function valid_hook()
 
 function validate_hooks()
 {
-    while [[ "$#" -gt 0 ]]; do
-        local hook="$1"; shift
-
+    for hook in "${selected_hooks[@]}"; do
         if ! valid_hook "$hook"; then
             abort "'$hook' is not a supported hook"
         fi
@@ -97,12 +95,10 @@ function validate_hooks()
 
 function install_hooks()
 {
-    while [[ "$#" -gt 0 ]]; do
-        local hook="$1"; shift
-
+    for hook in "${selected_hooks[@]}"; do
         rm -f "$repository/.git/hooks/$hook"
 
-        if ! ln -s "$hooks/$hook" "$repository/.git/hooks/$hook" > "/dev/null" 2>&1; then
+        if ! ln -s "$hooks/$hook" "$repository/.git/hooks/$hook" > "/dev/null"; then
             abort "'$hook' installation failure"
         fi
     done
@@ -116,7 +112,7 @@ function main()
     local -r repository=$( readlink -f "$hooks/../.." )
     local -r version=$( git -C "$repository" describe --always --dirty --broken )
 
-    local supported_hooks; mapfile -t supported_hooks < <( git -C "$repository" ls-files "git/hooks/" | xargs -r -d '\n' -I '{}' find "$repository/{}" -name "$mnemonic" -prune -o -executable -printf '%f\n' ); readonly supported_hooks
+    local supported_hooks; mapfile -t supported_hooks < <( git -C "$repository" ls-files 'git/hooks/' ':!:git/hooks/install' | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable -printf '%f\n' ); readonly supported_hooks
 
     local selected_hooks=()
 
@@ -141,19 +137,16 @@ function main()
             -*)
                 abort "'$argument' is not a supported option"
                 ;;
-            "$mnemonic")
-                abort "'$argument' is not a hook"
-                ;;
             *)
                 selected_hooks+=( "$argument" )
                 ;;
         esac
     done
 
-    readonly hooks
+    readonly selected_hooks
 
-    validate_hooks "${selected_hooks[@]}"
-    install_hooks "${selected_hooks[@]}"
+    validate_hooks
+    install_hooks
 }
 
 main "$@"
