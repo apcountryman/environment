@@ -15,6 +15,7 @@ UTC is used when determining release dates.
 
 ### Removed
 - [Installation of VirtualBox extension packs](https://github.com/apcountryman/environment/issues/30).
+- [Default VM installer ISO](https://github.com/apcountryman/environment/issues/33).
 
 ## [0.2.0](https://github.com/apcountryman/environment/compare/0.1.0...0.2.0) - 2020-03-26
 ### Added
