@@ -45,6 +45,7 @@ meld
 plantuml
 protobuf-compiler
 python-protobuf
+python3-autopep8
 scid
 shellcheck
 sl
