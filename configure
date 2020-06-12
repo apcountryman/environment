@@ -133,6 +133,13 @@ function configure_apt_package_sources()
     fi
 }
 
+function purge_modemmanager()
+{
+    if ! sudo apt -y purge modemmanager; then
+        abort "modemmanager purge failure"
+    fi
+}
+
 function update_and_install_packages()
 {
     local packages; mapfile -t packages < <( cat "$repository/packages" "$repository/packages-$environment" | sed '/^#/ d' | sed '/^$/ d' | sort ); readonly packages
@@ -232,6 +239,8 @@ function configure_environment()
     fi
 
     configure_apt_package_sources
+
+    purge_modemmanager
 
     update_and_install_packages
 
