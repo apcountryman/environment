@@ -15,6 +15,7 @@ UTC is used when determining release dates.
 
 ### Changed
 - [Update Git hooks install script](https://github.com/apcountryman/environment/issues/37).
+- [Update Git pre-commit hook script](https://github.com/apcountryman/environment/issues/38).
 
 ### Removed
 - [Installation of VirtualBox extension packs](https://github.com/apcountryman/environment/issues/30).
