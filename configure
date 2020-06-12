@@ -226,6 +226,20 @@ function install_virtualbox_guest_additions()
     fi
 }
 
+function add_user_to_groups()
+{
+    local -r user_groups=(
+        "dialout"
+        "vboxusers"
+    )
+
+    for user_group in "${user_groups[@]}"; do
+        if ! sudo adduser "$USER" "$user_group"; then
+            abort "'$user_group' group add failure"
+        fi
+    done
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -261,6 +275,8 @@ function configure_environment()
     if [[ "$environment" == "vm" ]]; then
         install_virtualbox_guest_additions
     fi
+
+    add_user_to_groups
 
     log_event "configuration completed"
 
