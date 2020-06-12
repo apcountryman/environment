@@ -190,17 +190,6 @@ function create_virtualbox_host_only_network()
     fi
 }
 
-function install_virtualbox_extension_pack()
-{
-    if ! ( wget https://download.virtualbox.org/virtualbox/6.1.4/Oracle_VM_VirtualBox_Extension_Pack-6.1.4.vbox-extpack && sudo vboxmanage extpack install ./*.vbox-extpack ); then
-        rm -f ./*.vbox-extpack
-
-        abort "VirtualBox extension pack installation failure"
-    fi
-
-    rm -f ./*.vbox-extpack
-}
-
 function install_virtualbox_guest_additions()
 {
     if ! sudo umount "/media/cdrom"; then
@@ -266,10 +255,6 @@ function configure_environment()
 
     if [[ "$environment" == "host" ]]; then
         create_virtualbox_host_only_network
-    fi
-
-    if [[ "$environment" == "host" ]]; then
-        install_virtualbox_extension_pack
     fi
 
     if [[ "$environment" == "vm" ]]; then
