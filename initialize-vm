@@ -218,9 +218,9 @@ function configure_vm()
         "--macaddress2"      "auto"
         "--cableconnected2"  "on"
 
-        "--usb"     "off"
+        "--usb"     "on"
         "--usbehci" "off"
-        "--usbxhci" "on"
+        "--usbxhci" "off"
     )
 
     if ! vboxmanage modifyvm "${options[@]}"; then
