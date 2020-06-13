@@ -217,10 +217,18 @@ function install_virtualbox_guest_additions()
 
 function add_user_to_groups()
 {
-    local -r user_groups=(
-        "dialout"
-        "vboxusers"
-    )
+    if [[ "$environment" == "host" ]]; then
+        local -r user_groups=(
+            "dialout"
+            "vboxusers"
+        )
+    fi
+
+    if [[ "$environment" == "vm" ]]; then
+        local -r user_groups=(
+            "dialout"
+        )
+    fi
 
     for user_group in "${user_groups[@]}"; do
         if ! sudo adduser "$USER" "$user_group"; then
