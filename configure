@@ -133,6 +133,13 @@ function configure_apt_package_sources()
     fi
 }
 
+function purge_modemmanager()
+{
+    if ! sudo apt -y purge modemmanager; then
+        abort "modemmanager purge failure"
+    fi
+}
+
 function update_and_install_packages()
 {
     local packages; mapfile -t packages < <( cat "$repository/packages" "$repository/packages-$environment" | sed '/^#/ d' | sed '/^$/ d' | sort ); readonly packages
@@ -183,17 +190,6 @@ function create_virtualbox_host_only_network()
     fi
 }
 
-function install_virtualbox_extension_pack()
-{
-    if ! ( wget https://download.virtualbox.org/virtualbox/6.1.4/Oracle_VM_VirtualBox_Extension_Pack-6.1.4.vbox-extpack && sudo vboxmanage extpack install ./*.vbox-extpack ); then
-        rm -f ./*.vbox-extpack
-
-        abort "VirtualBox extension pack installation failure"
-    fi
-
-    rm -f ./*.vbox-extpack
-}
-
 function install_virtualbox_guest_additions()
 {
     if ! sudo umount "/media/cdrom"; then
@@ -219,6 +215,28 @@ function install_virtualbox_guest_additions()
     fi
 }
 
+function add_user_to_groups()
+{
+    if [[ "$environment" == "host" ]]; then
+        local -r user_groups=(
+            "dialout"
+            "vboxusers"
+        )
+    fi
+
+    if [[ "$environment" == "vm" ]]; then
+        local -r user_groups=(
+            "dialout"
+        )
+    fi
+
+    for user_group in "${user_groups[@]}"; do
+        if ! sudo adduser "$USER" "$user_group"; then
+            abort "'$user_group' group add failure"
+        fi
+    done
+}
+
 function configure_environment()
 {
     local -r log_file="/var/log/environment"
@@ -233,6 +251,8 @@ function configure_environment()
 
     configure_apt_package_sources
 
+    purge_modemmanager
+
     update_and_install_packages
 
     configure_editor
@@ -245,13 +265,11 @@ function configure_environment()
         create_virtualbox_host_only_network
     fi
 
-    if [[ "$environment" == "host" ]]; then
-        install_virtualbox_extension_pack
-    fi
-
     if [[ "$environment" == "vm" ]]; then
         install_virtualbox_guest_additions
     fi
+
+    add_user_to_groups
 
     log_event "configuration completed"
 

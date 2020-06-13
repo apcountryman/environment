@@ -6,6 +6,22 @@ UTC is used when determining release dates.
 
 ## [Unreleased](https://github.com/apcountryman/environment/compare/master...develop)
 
+## [0.3.0](https://github.com/apcountryman/environment/compare/0.2.0...0.3.0) - 2020-06-13
+### Added
+- [`python3-autopep8` to package list](https://github.com/apcountryman/environment/issues/26).
+- [`cmatrix` to package list](https://github.com/apcountryman/environment/issues/27).
+- [`modemmanager` purge to environment configuration](https://github.com/apcountryman/environment/issues/28).
+- [User to groups during environment configuration](https://github.com/apcountryman/environment/issues/29).
+- [`brasero` to host package list](https://github.com/apcountryman/environment/issues/43).
+
+### Changed
+- [Update Git hooks install script](https://github.com/apcountryman/environment/issues/37).
+- [Update Git pre-commit hook script](https://github.com/apcountryman/environment/issues/38).
+
+### Removed
+- [Installation of VirtualBox extension packs](https://github.com/apcountryman/environment/issues/30).
+- [Default VM installer ISO](https://github.com/apcountryman/environment/issues/33).
+
 ## [0.2.0](https://github.com/apcountryman/environment/compare/0.1.0...0.2.0) - 2020-03-26
 ### Added
 - [`remmina` to host package list](https://github.com/apcountryman/environment/issues/14).

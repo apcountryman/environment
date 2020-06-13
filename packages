@@ -24,6 +24,7 @@ clang-format
 clang-tidy
 cmake
 cmake-curses-gui
+cmatrix
 colordiff
 cowsay
 cppcheck
@@ -45,6 +46,7 @@ meld
 plantuml
 protobuf-compiler
 python-protobuf
+python3-autopep8
 scid
 shellcheck
 sl
