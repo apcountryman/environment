@@ -12,6 +12,7 @@ UTC is used when determining release dates.
 - [`cmatrix` to package list](https://github.com/apcountryman/environment/issues/27).
 - [`modemmanager` purge to environment configuration](https://github.com/apcountryman/environment/issues/28).
 - [User to groups during environment configuration](https://github.com/apcountryman/environment/issues/29).
+- [`brasero` to host package list](https://github.com/apcountryman/environment/issues/43).
 
 ### Changed
 - [Update Git hooks install script](https://github.com/apcountryman/environment/issues/37).
