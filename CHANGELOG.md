@@ -6,7 +6,7 @@ UTC is used when determining release dates.
 
 ## [Unreleased](https://github.com/apcountryman/environment/compare/master...develop)
 
-## [0.3.0](https://github.com/apcountryman/environment/compare/0.2.0...0.3.0)
+## [0.3.0](https://github.com/apcountryman/environment/compare/0.2.0...0.3.0) - 2020-06-13
 ### Added
 - [`python3-autopep8` to package list](https://github.com/apcountryman/environment/issues/26).
 - [`cmatrix` to package list](https://github.com/apcountryman/environment/issues/27).
