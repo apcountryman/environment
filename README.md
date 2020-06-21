@@ -44,6 +44,14 @@ See the `add-ssh-connection` script's help text for usage details.
 ./add-ssh-connection --help
 ```
 
+## Versioning
+Post version 0.3.0, `environment` will follow the [Abseil Live at Head
+philosophy](https://abseil.io/about/philosophy).
+
+## Workflow
+`environment` uses the [GitHub flow](https://guides.github.com/introduction/flow/)
+workflow.
+
 ## Git Hooks
 To install this repository's Git hooks, execute the `install` script located in the
 `git/hooks` directory.
