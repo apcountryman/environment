@@ -47,6 +47,7 @@ minicom
 ncdu
 plantuml
 protobuf-compiler
+pycodestyle
 python-protobuf
 python3-autopep8
 scid
