@@ -43,6 +43,7 @@ linux-headers-amd64
 lolcat
 m4
 meld
+minicom
 plantuml
 protobuf-compiler
 python-protobuf
