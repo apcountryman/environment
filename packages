@@ -44,6 +44,7 @@ lolcat
 m4
 meld
 minicom
+ncdu
 plantuml
 protobuf-compiler
 python-protobuf
