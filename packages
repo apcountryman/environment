@@ -45,6 +45,7 @@ m4
 meld
 minicom
 ncdu
+netcat
 plantuml
 protobuf-compiler
 pycodestyle
