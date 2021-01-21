@@ -52,6 +52,7 @@ pycodestyle
 python-protobuf
 python3-autopep8
 python3-protobuf
+python3-pydocstyle
 scid
 shellcheck
 sl
