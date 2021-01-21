@@ -48,7 +48,6 @@ ncdu
 netcat
 plantuml
 protobuf-compiler
-pycodestyle
 python-protobuf
 python3-autopep8
 python3-protobuf
