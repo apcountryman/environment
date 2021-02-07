@@ -19,6 +19,7 @@ autogen
 avrdude
 avrdude-doc
 biber
+brasero
 clang
 clang-format
 clang-tidy
@@ -38,6 +39,7 @@ git
 gitk
 google-chrome-stable
 graphviz
+i3
 libprotobuf-java
 linux-headers-amd64
 lolcat
@@ -53,6 +55,7 @@ python3-autopep8
 python3-protobuf
 python3-pycodestyle
 python3-pydocstyle
+remmina
 scid
 shellcheck
 sl
