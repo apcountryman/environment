@@ -78,6 +78,17 @@ function log_event()
     fi
 }
 
+function enable_boot_messages()
+{
+    if ! sudo sed -i 's/quiet splash//g' "/etc/default/grub"; then
+        abort "boot messages enable failure"
+    fi
+
+    if ! sudo update-grub; then
+        abort "GRUB update failure"
+    fi
+}
+
 function configure_apt_package_sources()
 {
     if ! sudo apt-key add "$repository/apt/keys/google/linux_signing_key.pub"; then
@@ -147,6 +158,8 @@ function configure_environment()
     ensure_environment_has_not_been_configured
 
     log_event "configuration started"
+
+    enable_boot_messages
 
     configure_apt_package_sources
 
