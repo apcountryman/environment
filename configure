@@ -80,10 +80,6 @@ function log_event()
 
 function configure_apt_package_sources()
 {
-    if ! sudo sed -i '/^deb/ s/$/ contrib non-free/' "/etc/apt/sources.list"; then
-        abort "apt package sources configuration failure"
-    fi
-
     if ! sudo apt-key add "$repository/apt/keys/google/linux_signing_key.pub"; then
         abort "Google apt package signing key installation failure"
     fi
