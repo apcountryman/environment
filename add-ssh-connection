@@ -43,8 +43,6 @@ function display_help_text()
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --name <name> --ip-address <address> --key-comment <comment>"
-    echo "    $mnemonic --name-prefix <prefix> --ip-address <address>"
-    echo "        --key-comment <comment>"
     echo "OPTIONS"
     echo "    --help"
     echo "        Display this help text."
@@ -54,15 +52,12 @@ function display_help_text()
     echo "        Specify the connection's SSH key comment."
     echo "    --name <name>"
     echo "        Specify the remote host's name."
-    echo "    --name-prefix <prefix>"
-    echo "        Specify the remote host's name prefix."
     echo "    --version"
     echo "        Display the version of this script."
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic --name foo --ip-address 192.168.56.2 --key-comment bar"
-    echo "    $mnemonic --name-prefix foo --ip-address 192.168.56.2 --key-comment bar"
 }
 
 function display_version()
@@ -154,17 +149,6 @@ function main()
                 fi
 
                 local -r name="$1"; shift
-                ;;
-            --name-prefix)
-                if [[ -n "$name" ]]; then
-                    abort "remote host name / name prefix already specified"
-                fi
-
-                if [[ "$#" -le 0 ]]; then
-                    abort "remote host name prefix not specified"
-                fi
-
-                local -r name="$1-$version"; shift
                 ;;
             --*)
                 ;&
