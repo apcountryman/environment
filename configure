@@ -131,8 +131,6 @@ function generate_and_install_github_ssh_key()
         abort "GitHub SSH key generation failure"
     fi
 
-    # TODO: #5
-    # shellcheck disable=SC1117
     if ! printf "Host github.com\n    User apcountryman\n    IdentityFile %s\n    PreferredAuthentications publickey\n\n" "$key" > "$HOME/.ssh/config"; then
         abort "GitHub SSH key installation failure"
     fi
