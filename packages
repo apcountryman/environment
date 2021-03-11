@@ -45,6 +45,7 @@ minicom
 ncdu
 netcat
 plantuml
+printer-driver-gutenprint
 protobuf-compiler
 python-is-python3
 python3-autopep8
