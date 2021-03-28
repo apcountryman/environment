@@ -1,4 +1,6 @@
 # environment
+[![CI](https://github.com/apcountryman/environment/actions/workflows/ci.yml/badge.svg)](https://github.com/apcountryman/environment/actions/workflows/ci.yml)
+
 Host environment creation, configuration, and utilities.
 
 ## Obtaining the Source Code
