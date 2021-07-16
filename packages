@@ -45,6 +45,7 @@ meld
 minicom
 ncdu
 netcat
+pdftk
 plantuml
 printer-driver-gutenprint
 protobuf-compiler
