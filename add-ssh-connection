@@ -112,10 +112,6 @@ function main()
                 display_help_text
                 exit
                 ;;
-            --version)
-                display_version
-                exit
-                ;;
             --ip-address)
                 if [[ -n "$ip_address" ]]; then
                     abort "remote host IP address already specified"
@@ -148,6 +144,10 @@ function main()
                 fi
 
                 local -r name="$1"; shift
+                ;;
+            --version)
+                display_version
+                exit
                 ;;
             --*)
                 ;&
