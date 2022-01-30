@@ -43,19 +43,19 @@ function display_help_text()
     echo "SYNOPSIS"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
-    echo "    $mnemonic [--without-github-ssh-key]"
+    echo "    $mnemonic [--github-username <username>]"
     echo "OPTIONS"
+    echo "    --github-username <username>"
+    echo "        Generate a GitHub SSH key for the specified user."
     echo "    --help"
     echo "        Display this help text."
     echo "    --version"
     echo "        Display the version of this script."
-    echo "    --without-github-ssh-key"
-    echo "        Don't generate and install a GitHub SSH key."
     echo "EXAMPLES"
     echo "    $mnemonic --help"
     echo "    $mnemonic --version"
     echo "    $mnemonic"
-    echo "    $mnemonic --without-github-ssh-key"
+    echo "    $mnemonic --github-username apcountryman"
 }
 
 function display_version()
@@ -126,13 +126,13 @@ function configure_editor()
 
 function generate_and_install_github_ssh_key()
 {
-    local -r key="$HOME/.ssh/apcountryman-github"
+    local -r key="$HOME/.ssh/$github_username-github"
 
-    if ! ssh-keygen -t rsa -b 4096 -f "$key" -C "$USER@$( hostname ) for apcountryman@github.com"; then
+    if ! ssh-keygen -t rsa -b 4096 -f "$key" -C "$USER@$( hostname ) for $github_username@github.com"; then
         abort "GitHub SSH key generation failure"
     fi
 
-    if ! printf "Host github.com\n    User apcountryman\n    IdentityFile %s\n    PreferredAuthentications publickey\n\n" "$key" > "$HOME/.ssh/config"; then
+    if ! printf "Host github.com\n    User $github_username\n    IdentityFile %s\n    PreferredAuthentications publickey\n\n" "$key" > "$HOME/.ssh/config"; then
         abort "GitHub SSH key installation failure"
     fi
 }
@@ -168,7 +168,7 @@ function configure_environment()
 
     configure_editor
 
-    if [[ -z "$without_github_ssh_key" ]]; then
+    if [[ -n "$github_username" ]]; then
         generate_and_install_github_ssh_key
     fi
 
@@ -190,6 +190,17 @@ function main()
         local argument="$1"; shift
 
         case "$argument" in
+            --github-username)
+                if [[ -n "$github_username" ]]; then
+                    abort "GitHub username already specified"
+                fi
+
+                if [[ "$#" -le 0 ]]; then
+                    abort "GitHub username not specified"
+                fi
+
+                local -r github_username="$1"; shift
+                ;;
             --help)
                 display_help_text
                 exit
@@ -197,11 +208,6 @@ function main()
             --version)
                 display_version
                 exit
-                ;;
-            --without-github-ssh-key)
-                if [[ -z "$without_github_ssh_key" ]]; then
-                    local -r without_github_ssh_key="true"
-                fi
                 ;;
             --*)
                 ;&
