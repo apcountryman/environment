@@ -100,7 +100,7 @@ function configure_apt_package_sources()
         abort "Google Chrome apt package repository configuration failure"
     fi
 
-    if ! sudo add-apt-repository --yes ppa:kicad/kicad-6.0-releases; then
+    if ! sudo add-apt-repository -y ppa:kicad/kicad-6.0-releases; then
         abort "KiCad 6.0 releases PPA addition failure"
     fi
 }
