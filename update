@@ -79,7 +79,7 @@ function update_and_install_packages()
 {
     local packages; mapfile -t packages < <( sed '/^#/ d' "$repository/packages" | sed '/^$/ d' | sort ); readonly packages
 
-    if ! ( sudo apt update && sudo apt -y dist-upgrade && sudo apt -y install "${packages[@]}" && sudo apt -y autoremove ); then
+    if ! ( sudo apt update && sudo apt -y autoremove && sudo apt -y dist-upgrade && sudo apt -y install "${packages[@]}" ); then
         abort "packages update/installation failure"
     fi
 }
