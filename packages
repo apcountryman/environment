@@ -59,6 +59,7 @@ python3-protobuf
 python3-psutil
 python3-pycodestyle
 python3-pydocstyle
+python3-pytest
 python3-serial
 python3-xlsxwriter
 python3-xvfbwrapper
