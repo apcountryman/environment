@@ -33,6 +33,7 @@ cups-pdf
 diffpdf
 g++
 gcc
+gcc-arm-none-eabi
 git
 gitk
 google-chrome-stable
