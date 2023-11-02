@@ -19,6 +19,7 @@
 autogen
 automake
 biber
+bossa-cli
 brasero
 clang
 clang-format
