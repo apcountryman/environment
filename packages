@@ -35,6 +35,7 @@ diffpdf
 g++
 gcc
 gcc-arm-none-eabi
+gdb-multiarch
 git
 gitk
 google-chrome-stable
