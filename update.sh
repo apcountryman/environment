@@ -15,7 +15,7 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: CI static analysis script.
+# Description: Host update script.
 
 function error()
 {
@@ -35,27 +35,31 @@ function abort()
     exit 1
 }
 
+function validate_script()
+{
+    if ! shellcheck "$script"; then
+        abort
+    fi
+}
+
 function display_help_text()
 {
-    echo "NAME"
-    echo "    $mnemonic - Run a static analyzer against environment."
-    echo "SYNOPSIS"
-    echo "    $mnemonic --help"
-    echo "    $mnemonic --version"
-    echo "    $mnemonic --analyzer <analyzer>"
-    echo "OPTIONS"
-    echo "    --analyzer <analyzer>"
-    echo "        Specify the analyzer to run against environment. The following"
-    echo "        analyzers are supported:"
-    echo "            shellcheck"
-    echo "    --help"
-    echo "        Display this help text."
-    echo "    --version"
-    echo "        Display the version of this script."
-    echo "EXAMPLES"
-    echo "    $mnemonic --help"
-    echo "    $mnemonic --version"
-    echo "    $mnemonic --analyzer shellcheck"
+    printf "%b" \
+        "NAME\n" \
+        "    $mnemonic - Update a host.\n" \
+        "SYNOPSIS\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "OPTIONS\n" \
+        "    --help\n" \
+        "        Display this help text.\n" \
+        "    --version\n" \
+        "        Display the version of this script.\n" \
+        "EXAMPLES\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "    $mnemonic\n" \
+        ""
 }
 
 function display_version()
@@ -63,46 +67,58 @@ function display_version()
     echo "$mnemonic, version $version"
 }
 
-function run_shellcheck()
+function ensure_environment_has_been_configured()
 {
-    local scripts; mapfile -t scripts < <( git -C "$repository" ls-files | xargs -r -d '\n' -I '{}' find "$repository/{}" -executable ); readonly scripts
-
-    if ! shellcheck "${scripts[@]}"; then
-        abort
+    if [[ ! -e "$log_file" ]]; then
+        abort "environment has not been configured"
     fi
 }
 
-function ensure_no_static_analysis_errors_are_present()
+function log_event()
 {
-    "run_$analyzer"
+    local -r event="$1"
+
+    if ! echo "$( date --utc +'%F %H:%M:%S' ) ($version) - $event" | sudo tee -a "$log_file"; then
+        abort "log failure"
+    fi
+}
+
+function update_and_install_packages()
+{
+    local packages; mapfile -t packages < <( sed '/^#/ d' "$repository/packages" | sed '/^$/ d' | sort ); readonly packages
+
+    if ! ( sudo apt update && sudo apt -y autoremove && sudo apt -y dist-upgrade && sudo apt -y install "${packages[@]}" ); then
+        abort "packages update/installation failure"
+    fi
+}
+
+function update_environment()
+{
+    local -r log_file="/var/log/environment"
+
+    ensure_environment_has_been_configured
+
+    log_event "update started"
+
+    update_and_install_packages
+
+    log_event "update completed"
 }
 
 function main()
 {
     local -r script=$( readlink -f "$0" )
     local -r mnemonic=$( basename "$script" )
-    local -r repository=$( readlink -f "$( dirname "$script" )/.." )
+
+    validate_script
+
+    local -r repository=$( dirname "$script" )
     local -r version=$( git -C "$repository" describe --match=none --always --dirty --broken )
 
     while [[ "$#" -gt 0 ]]; do
         local argument="$1"; shift
 
         case "$argument" in
-            --analyzer)
-                if [[ -n "$analyzer" ]]; then
-                    abort "analyzer already specified"
-                fi
-
-                if [[ "$#" -le 0 ]]; then
-                    abort "analyzer not specified"
-                fi
-
-                local -r analyzer="$1"; shift
-
-                if [[ "$analyzer" != "shellcheck" ]]; then
-                    abort "'$analyzer' is not a supported analyzer"
-                fi
-                ;;
             --help)
                 display_help_text
                 exit
@@ -122,11 +138,7 @@ function main()
         esac
     done
 
-    if [[ -z "$analyzer" ]]; then
-        abort "'--analyzer' must be specified"
-    fi
-
-    ensure_no_static_analysis_errors_are_present
+    update_environment
 }
 
 main "$@"

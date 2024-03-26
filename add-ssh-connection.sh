@@ -15,7 +15,7 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: Add an SSH connection.
+# Description: SSH connection addition script.
 
 function error()
 {
@@ -35,29 +35,38 @@ function abort()
     exit 1
 }
 
+function validate_script()
+{
+    if ! shellcheck "$script"; then
+        abort
+    fi
+}
+
 function display_help_text()
 {
-    echo "NAME"
-    echo "    $mnemonic - Add an SSH connection."
-    echo "SYNOPSIS"
-    echo "    $mnemonic --help"
-    echo "    $mnemonic --version"
-    echo "    $mnemonic --name <name> --ip-address <address> --key-comment <comment>"
-    echo "OPTIONS"
-    echo "    --help"
-    echo "        Display this help text."
-    echo "    --ip-address <address>"
-    echo "        Specify the remote host's IP address."
-    echo "    --key-comment <comment>"
-    echo "        Specify the connection's SSH key comment."
-    echo "    --name <name>"
-    echo "        Specify the remote host's name."
-    echo "    --version"
-    echo "        Display the version of this script."
-    echo "EXAMPLES"
-    echo "    $mnemonic --help"
-    echo "    $mnemonic --version"
-    echo "    $mnemonic --name foo --ip-address 192.168.56.2 --key-comment bar"
+    printf "%b" \
+        "NAME\n" \
+        "    $mnemonic - Add an SSH connection.\n" \
+        "SYNOPSIS\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "    $mnemonic --name <name> --ip-address <address> --key-comment <comment>\n" \
+        "OPTIONS\n" \
+        "    --help\n" \
+        "        Display this help text.\n" \
+        "    --ip-address <address>\n" \
+        "        Specify the remote host's IP address.\n" \
+        "    --key-comment <comment>\n" \
+        "        Specify the connection's SSH key comment.\n" \
+        "    --name <name>\n" \
+        "        Specify the remote host's name.\n" \
+        "    --version\n" \
+        "        Display the version of this script.\n" \
+        "EXAMPLES\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "    $mnemonic --name foo --ip-address 192.168.56.2 --key-comment bar\n" \
+        ""
 }
 
 function display_version()
@@ -100,6 +109,9 @@ function main()
 {
     local -r script=$( readlink -f "$0" )
     local -r mnemonic=$( basename "$script" )
+
+    validate_script
+
     local -r repository=$( dirname "$script" )
     local -r version=$( git -C "$repository" describe --match=none --always --dirty --broken )
 
