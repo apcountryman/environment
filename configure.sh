@@ -15,7 +15,7 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: Configure a host.
+# Description: Host configuration script.
 
 function error()
 {
@@ -35,26 +35,35 @@ function abort()
     exit 1
 }
 
+function validate_script()
+{
+    if ! shellcheck "$script"; then
+        abort
+    fi
+}
+
 function display_help_text()
 {
-    echo "NAME"
-    echo "    $mnemonic - Configure a host."
-    echo "SYNOPSIS"
-    echo "    $mnemonic --help"
-    echo "    $mnemonic --version"
-    echo "    $mnemonic [--github-username <username>]"
-    echo "OPTIONS"
-    echo "    --github-username <username>"
-    echo "        Generate a GitHub SSH key for the specified user."
-    echo "    --help"
-    echo "        Display this help text."
-    echo "    --version"
-    echo "        Display the version of this script."
-    echo "EXAMPLES"
-    echo "    $mnemonic --help"
-    echo "    $mnemonic --version"
-    echo "    $mnemonic"
-    echo "    $mnemonic --github-username apcountryman"
+    printf "%b" \
+        "NAME" \
+        "    $mnemonic - Configure a host." \
+        "SYNOPSIS" \
+        "    $mnemonic --help" \
+        "    $mnemonic --version" \
+        "    $mnemonic [--github-username <username>]" \
+        "OPTIONS" \
+        "    --github-username <username>" \
+        "        Generate a GitHub SSH key for the specified user." \
+        "    --help" \
+        "        Display this help text." \
+        "    --version" \
+        "        Display the version of this script." \
+        "EXAMPLES" \
+        "    $mnemonic --help" \
+        "    $mnemonic --version" \
+        "    $mnemonic" \
+        "    $mnemonic --github-username apcountryman" \
+        ""
 }
 
 function display_version()
@@ -186,6 +195,9 @@ function main()
 {
     local -r script=$( readlink -f "$0" )
     local -r mnemonic=$( basename "$script" )
+
+    validate_script
+
     local -r repository=$( dirname "$script" )
     local -r version=$( git -C "$repository" describe --match=none --always --dirty --broken )
 

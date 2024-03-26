@@ -15,7 +15,7 @@
 # KIND, either express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-# Description: Update a host.
+# Description: Host update script.
 
 function error()
 {
@@ -35,22 +35,31 @@ function abort()
     exit 1
 }
 
+function validate_script()
+{
+    if ! shellcheck "$script"; then
+        abort
+    fi
+}
+
 function display_help_text()
 {
-    echo "NAME"
-    echo "    $mnemonic - Update a host."
-    echo "SYNOPSIS"
-    echo "    $mnemonic --help"
-    echo "    $mnemonic --version"
-    echo "OPTIONS"
-    echo "    --help"
-    echo "        Display this help text."
-    echo "    --version"
-    echo "        Display the version of this script."
-    echo "EXAMPLES"
-    echo "    $mnemonic --help"
-    echo "    $mnemonic --version"
-    echo "    $mnemonic"
+    printf "%b" \
+        "NAME" \
+        "    $mnemonic - Update a host." \
+        "SYNOPSIS" \
+        "    $mnemonic --help" \
+        "    $mnemonic --version" \
+        "OPTIONS" \
+        "    --help" \
+        "        Display this help text." \
+        "    --version" \
+        "        Display the version of this script." \
+        "EXAMPLES" \
+        "    $mnemonic --help" \
+        "    $mnemonic --version" \
+        "    $mnemonic" \
+        ""
 }
 
 function display_version()
@@ -100,6 +109,9 @@ function main()
 {
     local -r script=$( readlink -f "$0" )
     local -r mnemonic=$( basename "$script" )
+
+    validate_script
+
     local -r repository=$( dirname "$script" )
     local -r version=$( git -C "$repository" describe --match=none --always --dirty --broken )
 

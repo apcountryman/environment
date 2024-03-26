@@ -21,29 +21,29 @@ git clone git@github.com:apcountryman/environment.git
 ### Configure Environment
 
 To configure an environment, install Git, clone this repository, and execute the
-`configure` script.
-See the `configure` script's help text for usage details.
+`configure.sh` script.
+See the `configure.sh` script's help text for usage details.
 ```shell
 sudo apt update && sudo apt -y install git
 git clone https://github.com/apcountryman/environment.git
 cd environment
-./configure --help
+./configure.sh --help
 ```
 
 ### Update Environment
 
-To update an environment, execute the `update` script.
-See the `update` script's help text for usage details.
+To update an environment, execute the `update.sh` script.
+See the `update.sh` script's help text for usage details.
 ```shell
-./update --help
+./update.sh --help
 ```
 
 ### Add SSH Connection
 
-To add an SSH connection, execute the `add-ssh-connection` script.
-See the `add-ssh-connection` script's help text for usage details.
+To add an SSH connection, execute the `add-ssh-connection.sh` script.
+See the `add-ssh-connection.sh` script's help text for usage details.
 ```shell
-./add-ssh-connection --help
+./add-ssh-connection.sh --help
 ```
 
 ## Versioning
@@ -57,11 +57,11 @@ environment uses the [GitHub flow](https://guides.github.com/introduction/flow/)
 
 ## Git Hooks
 
-To install this repository's Git hooks, execute the `install` script located in the
+To install this repository's Git hooks, execute the `install.sh` script located in the
 `git/hooks` directory.
-See the `install` script's help text for usage details.
+See the `install.sh` script's help text for usage details.
 ```shell
-./git/hooks/install --help
+./git/hooks/install.sh --help
 ```
 
 ## Code of Conduct
