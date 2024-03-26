@@ -45,27 +45,27 @@ function validate_script()
 function display_help_text()
 {
     printf "%b" \
-        "NAME" \
-        "    $mnemonic - Add an SSH connection." \
-        "SYNOPSIS" \
-        "    $mnemonic --help" \
-        "    $mnemonic --version" \
-        "    $mnemonic --name <name> --ip-address <address> --key-comment <comment>" \
-        "OPTIONS" \
-        "    --help" \
-        "        Display this help text." \
-        "    --ip-address <address>" \
-        "        Specify the remote host's IP address." \
-        "    --key-comment <comment>" \
-        "        Specify the connection's SSH key comment." \
-        "    --name <name>" \
-        "        Specify the remote host's name." \
-        "    --version" \
-        "        Display the version of this script." \
-        "EXAMPLES" \
-        "    $mnemonic --help" \
-        "    $mnemonic --version" \
-        "    $mnemonic --name foo --ip-address 192.168.56.2 --key-comment bar" \
+        "NAME\n" \
+        "    $mnemonic - Add an SSH connection.\n" \
+        "SYNOPSIS\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "    $mnemonic --name <name> --ip-address <address> --key-comment <comment>\n" \
+        "OPTIONS\n" \
+        "    --help\n" \
+        "        Display this help text.\n" \
+        "    --ip-address <address>\n" \
+        "        Specify the remote host's IP address.\n" \
+        "    --key-comment <comment>\n" \
+        "        Specify the connection's SSH key comment.\n" \
+        "    --name <name>\n" \
+        "        Specify the remote host's name.\n" \
+        "    --version\n" \
+        "        Display the version of this script.\n" \
+        "EXAMPLES\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "    $mnemonic --name foo --ip-address 192.168.56.2 --key-comment bar\n" \
         ""
 }
 

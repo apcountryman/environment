@@ -45,20 +45,20 @@ function validate_script()
 function display_help_text()
 {
     printf "%b" \
-        "NAME" \
-        "    $mnemonic - Update a host." \
-        "SYNOPSIS" \
-        "    $mnemonic --help" \
-        "    $mnemonic --version" \
-        "OPTIONS" \
-        "    --help" \
-        "        Display this help text." \
-        "    --version" \
-        "        Display the version of this script." \
-        "EXAMPLES" \
-        "    $mnemonic --help" \
-        "    $mnemonic --version" \
-        "    $mnemonic" \
+        "NAME\n" \
+        "    $mnemonic - Update a host.\n" \
+        "SYNOPSIS\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "OPTIONS\n" \
+        "    --help\n" \
+        "        Display this help text.\n" \
+        "    --version\n" \
+        "        Display the version of this script.\n" \
+        "EXAMPLES\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "    $mnemonic\n" \
         ""
 }
 

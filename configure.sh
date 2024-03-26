@@ -45,24 +45,24 @@ function validate_script()
 function display_help_text()
 {
     printf "%b" \
-        "NAME" \
-        "    $mnemonic - Configure a host." \
-        "SYNOPSIS" \
-        "    $mnemonic --help" \
-        "    $mnemonic --version" \
-        "    $mnemonic [--github-username <username>]" \
-        "OPTIONS" \
-        "    --github-username <username>" \
-        "        Generate a GitHub SSH key for the specified user." \
-        "    --help" \
-        "        Display this help text." \
-        "    --version" \
-        "        Display the version of this script." \
-        "EXAMPLES" \
-        "    $mnemonic --help" \
-        "    $mnemonic --version" \
-        "    $mnemonic" \
-        "    $mnemonic --github-username apcountryman" \
+        "NAME\n" \
+        "    $mnemonic - Configure a host.\n" \
+        "SYNOPSIS\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "    $mnemonic [--github-username <username>]\n" \
+        "OPTIONS\n" \
+        "    --github-username <username>\n" \
+        "        Generate a GitHub SSH key for the specified user.\n" \
+        "    --help\n" \
+        "        Display this help text.\n" \
+        "    --version\n" \
+        "        Display the version of this script.\n" \
+        "EXAMPLES\n" \
+        "    $mnemonic --help\n" \
+        "    $mnemonic --version\n" \
+        "    $mnemonic\n" \
+        "    $mnemonic --github-username apcountryman\n" \
         ""
 }
 
