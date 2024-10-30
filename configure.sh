@@ -100,14 +100,6 @@ function enable_boot_messages()
 
 function configure_apt_package_sources()
 {
-    if ! sudo apt-key add "$repository/apt/keys/google/linux_signing_key.pub"; then
-        abort "Google apt package signing key installation failure"
-    fi
-
-    if ! echo "deb http://dl.google.com/linux/chrome/deb stable main" | sudo tee "/etc/apt/sources.list.d/google-chrome.list"; then
-        abort "Google Chrome apt package repository configuration failure"
-    fi
-
     if ! sudo add-apt-repository -y ppa:kicad/kicad-6.0-releases; then
         abort "KiCad 6.0 releases PPA addition failure"
     fi
