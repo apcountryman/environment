@@ -98,13 +98,6 @@ function enable_boot_messages()
     fi
 }
 
-function configure_apt_package_sources()
-{
-    if ! sudo add-apt-repository -y ppa:kicad/kicad-6.0-releases; then
-        abort "KiCad 6.0 releases PPA addition failure"
-    fi
-}
-
 function purge_modemmanager()
 {
     if ! sudo apt -y purge modemmanager; then
@@ -163,8 +156,6 @@ function configure_environment()
     log_event "configuration started"
 
     enable_boot_messages
-
-    configure_apt_package_sources
 
     purge_modemmanager
 
