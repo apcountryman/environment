@@ -24,7 +24,7 @@ To configure an environment, install Git, clone this repository, and execute the
 `configure.sh` script.
 See the `configure.sh` script's help text for usage details.
 ```shell
-sudo apt update && sudo apt -y install git
+sudo apt update && sudo apt -y install git shellcheck
 git clone https://github.com/apcountryman/environment.git
 cd environment
 ./configure.sh --help
