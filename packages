@@ -47,7 +47,7 @@ m4
 meld
 minicom
 ncdu
-netcat
+netcat-openbsd
 nvidia-settings
 pdftk
 plantuml
